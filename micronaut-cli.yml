@@ -1,0 +1,6 @@
+applicationType: default
+defaultPackage: ee.annjakubel
+testFramework: spock
+sourceLanguage: java
+buildTool: maven
+features: [annotation-api, app-name, data, data-jdbc, groovy-maven-plus-plugin, http-client, java, java-application, jdbc-hikari, liquibase, maven, maven-enforcer-plugin, micronaut-aot, micronaut-http-validation, netty-server, postgres, properties, readme, security, security-annotations, serialization-jackson, shade, slf4j-simple-logger, spock, test-resources]
