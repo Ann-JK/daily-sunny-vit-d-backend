@@ -1,4 +1,4 @@
-package ee.annjakubel;
+package ee.annjakubel.controller;
 
 import io.micronaut.http.MediaType;
 import io.micronaut.http.annotation.Controller;
