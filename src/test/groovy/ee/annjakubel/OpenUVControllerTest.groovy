@@ -1,5 +1,6 @@
 package ee.annjakubel
 
+import ee.annjakubel.controller.OpenUVController
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.HttpClient
@@ -11,22 +12,21 @@ import spock.lang.Specification
 @MicronautTest
 class OpenUVControllerTest extends Specification {
 
-    @Client("/")
     @Inject
-    HttpClient client
+    OpenUVController controller
 
     def "apiCallResponseIsDeserialized"() {
 
         given:
         def lat = "55.5"
         def lng = "66.6"
-        def request = HttpRequest.GET("/uv?lat=$lat&lng=$lng")
 
         when:
-        def response = client.toBlocking().exchange(request, String)
+        def response = controller.getUVData(lat, lng)
 
         then:
-        response.status == HttpStatus.OK
+        response.uvValue != null
+        response.currentDateTime != null
     }
 
 

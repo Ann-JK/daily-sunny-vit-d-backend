@@ -1,14 +1,13 @@
 package ee.annjakubel.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.micronaut.serde.annotation.Serdeable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.OffsetDateTime;
+
 @Data
-@Serdeable
+@AllArgsConstructor
 public class OpenUV {
-
-    @JsonProperty("uv")
-    private double uvValue;
-
+     private Double uvValue;
+     private OffsetDateTime currentDateTime;
 }
