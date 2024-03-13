@@ -36,6 +36,6 @@ public class OpenUVController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return service.transformResponse(response);
+        return service.transformResponse(response, lat, lng);
     }
 }
