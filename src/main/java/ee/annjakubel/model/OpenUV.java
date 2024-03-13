@@ -10,4 +10,6 @@ import java.time.OffsetDateTime;
 public class OpenUV {
      private Double uvValue;
      private OffsetDateTime currentDateTime;
+     private double latitude;
+     private double longitude;
 }
