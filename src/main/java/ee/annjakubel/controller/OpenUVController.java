@@ -6,6 +6,7 @@ import io.micronaut.context.annotation.Property;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
 import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.server.cors.CrossOrigin;
 import io.micronaut.http.uri.UriBuilder;
 import jakarta.inject.Inject;
 
@@ -17,6 +18,7 @@ import java.net.http.HttpResponse;
 
 
 @Controller
+@CrossOrigin(allowedOrigins = "https://localhost:4200/d-vit, https://localhost:4200/d-vit/uv")
 public class OpenUVController {
     @Inject
     OpenUVService service;
@@ -38,4 +40,6 @@ public class OpenUVController {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return service.transformResponse(response);
     }
+
+    //TODO: UVRequest endpoint, new POJO for response, service class?
 }
