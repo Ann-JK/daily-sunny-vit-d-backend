@@ -3,13 +3,14 @@ package ee.annjakubel.model;
 import io.micronaut.serde.annotation.Serdeable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.time.OffsetDateTime;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Serdeable
-public class OpenUV {
-     private Double uvValue;
-     private OffsetDateTime currentDateTime;
+public class UVResponse {
+    public double UV;
+    public double recommendedExposure;
+    public String description;
 }

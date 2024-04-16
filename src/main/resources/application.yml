@@ -1,0 +1,24 @@
+#liquibase:
+#  datasources:
+#    default:
+#      change-log: classpath:db/liquibase-changelog.xml
+
+#datasources:
+#  default:
+#    db-type: postgres
+#    dialect: POSTGRES
+#    driver-class-name: org.postgresql.Driver
+#    url: asdfg
+
+micronaut:
+  server:
+    cors:
+      enabled: true
+  application:
+    name: daily-sunny-vit-d-backend
+
+openuv:
+  header:
+    token:
+      name: x-access-token
+      value: openuv-41mzrrlsrft745-io

@@ -3,9 +3,7 @@ package ee.annjakubel.controller;
 import ee.annjakubel.model.OpenUV;
 import ee.annjakubel.service.OpenUVService;
 import io.micronaut.context.annotation.Property;
-import io.micronaut.http.annotation.Controller;
-import io.micronaut.http.annotation.Get;
-import io.micronaut.http.annotation.QueryValue;
+import io.micronaut.http.annotation.*;
 import io.micronaut.http.server.cors.CrossOrigin;
 import io.micronaut.http.uri.UriBuilder;
 import jakarta.inject.Inject;
@@ -30,7 +28,7 @@ public class OpenUVController {
 
     HttpClient httpClient = HttpClient.newHttpClient();
 
-    @Get("/uv")
+    @Get("/open-uv")
     public OpenUV getUVData(@QueryValue String lat, @QueryValue String lng) throws IOException, InterruptedException {
         URI uri = UriBuilder.of("https://api.openuv.io/api/v1/uv?lat=" + lat + "&lng=" + lng).build();
         HttpRequest request = HttpRequest.newBuilder(uri)
@@ -40,6 +38,4 @@ public class OpenUVController {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return service.transformResponse(response);
     }
-
-    //TODO: UVRequest endpoint, new POJO for response, service class?
 }
