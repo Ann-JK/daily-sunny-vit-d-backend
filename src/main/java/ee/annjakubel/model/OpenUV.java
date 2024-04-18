@@ -10,8 +10,10 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @Serdeable
 public class OpenUV {
-     private Double uvValue;
+     private Double uvIndex;
      private OffsetDateTime currentDateTime;
      private double latitude;
      private double longitude;
+     private double altitude;
+     private double ozoneLayerThickness;
 }

@@ -22,21 +22,19 @@ public class UVExposureService {
        OpenUV uvData = openUVController.getUVData(String.valueOf(uvRequest.getLatitude()),
                String.valueOf(uvRequest.getLongitude()));
 
-       log.info("Current uv data: {}", uvData.getUvValue());
+       log.info("Current uv data: {}", uvData.getUvIndex());
 
-       if (uvData.getUvValue() < 3.0) {
-           return new UVResponse(uvData.getUvValue(), 0, Description.NO_EXPOSURE);
+       if (uvData.getUvIndex() < 3.0) {
+           return new UVResponse(uvData.getUvIndex(), 0, Description.NO_EXPOSURE);
        }
 
-       return new UVResponse(uvData.getUvValue(), 1, "Example successful response");
+       return calculateFormula(uvRequest.getSkinType(), uvData);
+
     }
 
-//    public UVResponse calculateBySkinType(int skinType) {
-//        UVResponse response = new UVResponse();
-//        switch (skinType) {
-//            case 1:
-//
-//        }
-//        return response;
-//    }
+    public UVResponse calculateFormula(int skinType, OpenUV uvData) {
+        UVResponse response = new UVResponse();
+
+        return response;
+    }
 }

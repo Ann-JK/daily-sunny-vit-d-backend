@@ -19,13 +19,15 @@ public class OpenUVService {
     public OpenUV transformResponse(HttpResponse<String> response, String latitude, String longitude) throws JsonProcessingException {
         JsonNode jsonNode = new ObjectMapper().readTree(response.body());
 
-        Double uvValue = jsonNode.get("result").get("uv").asDouble();
+        Double uvIndex = jsonNode.get("result").get("uv").asDouble();
         String currentDateTime = jsonNode.get("result").get("uv_time").asText();
+        Double altitude = jsonNode.get("result").get("sun_position").get("altitude").asDouble();
+        Double oZoneLayer = jsonNode.get("result").get("ozone").asDouble();
 
         OffsetDateTime parsedDateTime = OffsetDateTime.parse(currentDateTime, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         Double lat = Double.parseDouble(latitude);
         Double lng = Double.parseDouble(longitude);
 
-        return new OpenUV(uvValue, parsedDateTime, lat, lng);
+        return new OpenUV(uvIndex, parsedDateTime, lat, lng, altitude, oZoneLayer);
     }
 }
