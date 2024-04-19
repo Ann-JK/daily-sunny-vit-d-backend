@@ -14,6 +14,6 @@ public class OpenUV {
      private OffsetDateTime currentDateTime;
      private double latitude;
      private double longitude;
-     private double altitude;
+     private double altitudeAngle;
      private double ozoneLayerThickness;
 }

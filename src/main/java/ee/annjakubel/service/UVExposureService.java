@@ -1,7 +1,7 @@
 package ee.annjakubel.service;
 
 import ee.annjakubel.Description;
-import ee.annjakubel.controller.OpenUVController;
+import ee.annjakubel.controller.WeatherDataController;
 import ee.annjakubel.model.OpenUV;
 import ee.annjakubel.model.UVRequest;
 import ee.annjakubel.model.UVResponse;
@@ -10,31 +10,54 @@ import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @Singleton
 @Slf4j
 public class UVExposureService {
 
     @Inject
-    OpenUVController openUVController;
+    WeatherDataController openUVController;
 
     public UVResponse calculateSunExposureData(UVRequest uvRequest) throws IOException, InterruptedException {
        OpenUV uvData = openUVController.getUVData(String.valueOf(uvRequest.getLatitude()),
                String.valueOf(uvRequest.getLongitude()));
 
-       log.info("Current uv data: {}", uvData.getUvIndex());
+       double elevation = openUVController.getElevationData(String.valueOf(uvRequest.getLatitude()),
+               String.valueOf(uvRequest.getLongitude()));
+
+       double formattedUVIndex = roundDecimals(uvData.getUvIndex(), 2);
 
        if (uvData.getUvIndex() < 3.0) {
-           return new UVResponse(uvData.getUvIndex(), 0, Description.NO_EXPOSURE);
+           return new UVResponse(formattedUVIndex, 0, Description.NO_EXPOSURE);
        }
 
-       return calculateFormula(uvRequest.getSkinType(), uvData);
+        double recommendedTime = calculateFormula(uvRequest.getSkinType(), uvData, elevation);
+        String formattedDescription = String.format(Description.EXPOSURE, (int) formattedUVIndex, (int) recommendedTime);
+        log.info(formattedDescription);
 
+       return new UVResponse(formattedUVIndex, recommendedTime, formattedDescription);
     }
 
-    public UVResponse calculateFormula(int skinType, OpenUV uvData) {
-        UVResponse response = new UVResponse();
+    public double calculateFormula(int skinType, OpenUV uvData, double elevation) {
+        //TODO WITH ALTITUDE ANGLE
+        double solarZenithAngleFactor = Math.pow(Math.cos(45) / Math.cos(0), 2);
+        double altitudeFactor = Math.pow(1 / (1 + 0.0001 * elevation), 2);
+        double oZoneLayerThicknessFactor = 1 / (1 + 0.0001 * uvData.getOzoneLayerThickness());
 
-        return response;
+        double minutesResult = Math.round(600.0 / uvData.getUvIndex() * 60 * skinType * 0.01 *
+                solarZenithAngleFactor * altitudeFactor * oZoneLayerThicknessFactor);
+
+        return roundDecimals(minutesResult, 0);
+    }
+
+    public double roundDecimals(double value, int decimal) {
+        BigDecimal bigDecimal = new BigDecimal(value);
+        bigDecimal = bigDecimal.setScale(decimal, BigDecimal.ROUND_HALF_UP);
+        return bigDecimal.doubleValue();
+    }
+
+    public int calculateSolarZentihAngleApproximation() {
+        return 1;
     }
 }

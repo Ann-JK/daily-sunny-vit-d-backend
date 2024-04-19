@@ -1,10 +1,6 @@
 package ee.annjakubel
 
-import ee.annjakubel.controller.OpenUVController
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.HttpStatus
-import io.micronaut.http.client.HttpClient
-import io.micronaut.http.client.annotation.Client
+import ee.annjakubel.controller.WeatherDataController
 import io.micronaut.test.extensions.spock.annotation.MicronautTest
 import jakarta.inject.Inject
 import spock.lang.Specification
@@ -13,7 +9,7 @@ import spock.lang.Specification
 class OpenUVControllerTest extends Specification {
 
     @Inject
-    OpenUVController controller
+    WeatherDataController controller
 
     def "apiCallResponseIsDeserialized"() {
 
