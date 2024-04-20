@@ -40,13 +40,19 @@ public class UVExposureService {
     }
 
     public double calculateFormula(int skinType, OpenUV uvData, double elevation) {
-        //TODO WITH ALTITUDE ANGLE
-        double solarZenithAngleFactor = Math.pow(Math.cos(45) / Math.cos(0), 2);
-        double altitudeFactor = Math.pow(1 / (1 + 0.0001 * elevation), 2);
-        double oZoneLayerThicknessFactor = 1 / (1 + 0.0001 * uvData.getOzoneLayerThickness());
 
-        double minutesResult = Math.round(600.0 / uvData.getUvIndex() * 60 * skinType * 0.01 *
-                solarZenithAngleFactor * altitudeFactor * oZoneLayerThicknessFactor);
+        double altitudeAngleInDegrees = Math.toDegrees(uvData.getAltitudeAngle());
+        double solarZenithAngle = Math.toRadians(90 - altitudeAngleInDegrees);
+        log.info("Solar Zenith Angle: {}", solarZenithAngle);
+        log.info("Solar Altitude angle: {}", altitudeAngleInDegrees);
+
+        double altitudeFactor = 1 / (Math.pow(1 + 0.0001 * elevation, 2));
+        double oZoneLayerThicknessFactor = 1 / (1 + 0.0001 * uvData.getOzoneLayerThickness());
+        double skinTypeFactor = 1.0 / skinType;
+
+
+        double minutesResult = Math.round(1000.0 / (uvData.getUvIndex() * 60 * skinTypeFactor *
+                 solarZenithAngle * altitudeFactor * oZoneLayerThicknessFactor));
 
         return roundDecimals(minutesResult, 0);
     }
@@ -55,9 +61,5 @@ public class UVExposureService {
         BigDecimal bigDecimal = new BigDecimal(value);
         bigDecimal = bigDecimal.setScale(decimal, BigDecimal.ROUND_HALF_UP);
         return bigDecimal.doubleValue();
-    }
-
-    public int calculateSolarZentihAngleApproximation() {
-        return 1;
     }
 }

@@ -39,4 +39,10 @@ public class OpenUVService {
         double elevation = jsonNode.get("results").get(0).get("elevation").asDouble();
         return elevation;
     }
+
+    public double parseSolarNoonAltitudeAngle(HttpResponse<String> response) throws JsonProcessingException {
+        JsonNode jsonNode = new ObjectMapper().readTree(response.body());
+        double altitudeAngle = jsonNode.get("result").get("sun_info").get("sun_position").get("altitude").asDouble();
+        return altitudeAngle;
+    }
 }
