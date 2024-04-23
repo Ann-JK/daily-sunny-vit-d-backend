@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Singleton
 @Slf4j
@@ -43,8 +44,9 @@ public class UVExposureService {
 
         double altitudeAngleInDegrees = Math.toDegrees(uvData.getAltitudeAngle());
         double solarZenithAngle = Math.toRadians(90 - altitudeAngleInDegrees);
-        log.info("Solar Zenith Angle: {}", solarZenithAngle);
-        log.info("Solar Altitude angle: {}", altitudeAngleInDegrees);
+        log.info("Skin type: {}; UV index : {}; Solar Zenith Angle: {} radians; Elevation from sea level: {} meters; " +
+                "Ozone layer thickness: {} dobsons", skinType, uvData.getUvIndex(), solarZenithAngle, elevation,
+                uvData.getOzoneLayerThickness());
 
         double altitudeFactor = 1 / (Math.pow(1 + 0.0001 * elevation, 2));
         double oZoneLayerThicknessFactor = 1 / (1 + 0.0001 * uvData.getOzoneLayerThickness());
@@ -59,7 +61,7 @@ public class UVExposureService {
 
     public double roundDecimals(double value, int decimal) {
         BigDecimal bigDecimal = new BigDecimal(value);
-        bigDecimal = bigDecimal.setScale(decimal, BigDecimal.ROUND_HALF_UP);
+        bigDecimal = bigDecimal.setScale(decimal, RoundingMode.HALF_UP);
         return bigDecimal.doubleValue();
     }
 }
