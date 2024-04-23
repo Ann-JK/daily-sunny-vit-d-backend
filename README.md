@@ -1,3 +1,16 @@
+### Preparing PostgreSQL and creating database
+1. Make sure docker engine is running and run docker container with the following command in the terminal: 
+<br><code>docker run --name postgres-dvit -e POSTGRES_PASSWORD=vitamind -p 5432:5432 -d postgres:alpine</code>
+   <br>This command will start PostgreSQL container listening for connection on localhost:5432:5432.
+  - Username: postgres
+  - Password: vitamind
+2. Enter the container with the following command: <br><code>docker exec -it postgres-dvit bash
+   </code>
+3. Enter psql: <br><code>psql -U postgres</code>
+4. Create database: <br><code>create database dvit_db;</code>
+
+---
+
 ## Micronaut 4.2.4 Documentation
 
 - [User Guide](https://docs.micronaut.io/4.2.4/guide/index.html)

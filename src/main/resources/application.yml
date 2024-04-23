@@ -1,14 +1,18 @@
-#liquibase:
-#  datasources:
-#    default:
-#      change-log: classpath:db/liquibase-changelog.xml
+liquibase:
+  enabled: true
+  datasources:
+    default:
+      change-log: classpath:db/liquibase-changelog.xml
 
-#datasources:
-#  default:
-#    db-type: postgres
-#    dialect: POSTGRES
-#    driver-class-name: org.postgresql.Driver
-#    url: asdfg
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/dvit_db
+    db-type: postgres
+    dialect: POSTGRES
+    driver-class-name: org.postgresql.Driver
+    schema-generate: NONE
+    username: postgres
+    password: vitamind
 
 micronaut:
   server:
