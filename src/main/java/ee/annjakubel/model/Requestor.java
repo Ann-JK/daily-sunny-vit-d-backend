@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class Requestor {
     private String email;
     private SkinAttribute attributeNumber;

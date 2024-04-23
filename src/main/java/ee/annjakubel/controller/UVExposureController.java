@@ -24,8 +24,7 @@ public class UVExposureController {
     UVExposureService uvExposureService;
 
     @Post("/d-vit/uv")
-    public MutableHttpResponse<UVResponse> calculateSunExposureTime(@Body UVRequest uvRequest) throws IOException, InterruptedException {
-        log.info(" ");
+    public MutableHttpResponse<UVResponse> getSunExposureData(@Body UVRequest uvRequest) throws IOException, InterruptedException {
         UVResponse uvResponse = uvExposureService.calculateSunExposureData(uvRequest);
         log.info(uvResponse.toString());
 

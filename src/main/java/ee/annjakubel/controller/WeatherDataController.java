@@ -17,7 +17,7 @@ import java.net.http.HttpResponse;
 
 @Controller
 @CrossOrigin(allowedOrigins = "https://localhost:4200/d-vit, https://localhost:4200/d-vit/uv")
-public class OpenUVController {
+public class WeatherDataController {
     @Inject
     OpenUVService service;
 
@@ -25,6 +25,8 @@ public class OpenUVController {
     String accessHeaderName;
     @Property(name="openuv.header.token.value")
     String accessHeaderValue;
+    @Property(name="google-elevation.api-key")
+    String googleElevationApiKey;
 
     HttpClient httpClient = HttpClient.newHttpClient();
 
@@ -36,6 +38,19 @@ public class OpenUVController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        return service.transformResponse(response, lat, lng);
+        return service.parseOpenUVResponse(response, lat, lng);
+    }
+
+    @Get("/google-elevation")
+    public double getElevationData(@QueryValue String lat, @QueryValue String lng)
+            throws IOException, InterruptedException {
+        URI uri = UriBuilder.of("https://maps.googleapis.com/maps/api/elevation/json?locations="+ lat + "%2C"
+                + lng +"&key=" + googleElevationApiKey).build();
+
+        HttpRequest request = HttpRequest.newBuilder(uri)
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        return service.parseGoogleElevationResponse(response);
     }
 }
