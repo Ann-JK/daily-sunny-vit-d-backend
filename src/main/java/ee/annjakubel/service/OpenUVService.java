@@ -7,7 +7,6 @@ import ee.annjakubel.model.OpenUV;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
 
-
 import java.net.http.HttpResponse;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +20,6 @@ public class OpenUVService {
 
         double uvIndex = jsonNode.get("result").get("uv").asDouble();
         String currentDateTime = jsonNode.get("result").get("uv_time").asText();
-        //TODO: THIS IS THE SOLAR ALTITUDE ANGLE!!
         double altitudeAngle = jsonNode.get("result").get("sun_info").get("sun_position").get("altitude").asDouble();
         double oZoneLayer = jsonNode.get("result").get("ozone").asDouble();
 
@@ -36,13 +34,6 @@ public class OpenUVService {
         JsonNode jsonNode = new ObjectMapper().readTree(response.body());
         log.info(jsonNode.toString());
 
-        double elevation = jsonNode.get("results").get(0).get("elevation").asDouble();
-        return elevation;
-    }
-
-    public double parseSolarNoonAltitudeAngle(HttpResponse<String> response) throws JsonProcessingException {
-        JsonNode jsonNode = new ObjectMapper().readTree(response.body());
-        double altitudeAngle = jsonNode.get("result").get("sun_info").get("sun_position").get("altitude").asDouble();
-        return altitudeAngle;
+        return jsonNode.get("results").get(0).get("elevation").asDouble();
     }
 }

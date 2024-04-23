@@ -15,6 +15,11 @@ datasources:
     password: vitamind
 
 micronaut:
+  security:
+    authentication: session
+    redirect:
+      login-success: /
+      login-failure: /requestor/auth-failed
   server:
     cors:
       enabled: true
