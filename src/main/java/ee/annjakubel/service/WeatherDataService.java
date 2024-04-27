@@ -13,9 +13,10 @@ import java.time.format.DateTimeFormatter;
 
 @Singleton
 @Slf4j
-public class OpenUVService {
+public class WeatherDataService {
 
-    public OpenUV parseOpenUVResponse(HttpResponse<String> response, String latitude, String longitude) throws JsonProcessingException {
+    public OpenUV parseOpenUVResponse(HttpResponse<String> response, String latitude, String longitude)
+            throws JsonProcessingException {
         JsonNode jsonNode = new ObjectMapper().readTree(response.body());
 
         double uvIndex = jsonNode.get("result").get("uv").asDouble();

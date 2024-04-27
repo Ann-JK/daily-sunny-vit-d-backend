@@ -1,7 +1,7 @@
 package ee.annjakubel.controller;
 
 import ee.annjakubel.model.OpenUV;
-import ee.annjakubel.service.OpenUVService;
+import ee.annjakubel.service.WeatherDataService;
 import io.micronaut.context.annotation.Property;
 import io.micronaut.http.annotation.*;
 import io.micronaut.http.server.cors.CrossOrigin;
@@ -19,7 +19,7 @@ import java.net.http.HttpResponse;
 @CrossOrigin(allowedOrigins = "https://localhost:4200/d-vit, https://localhost:4200/d-vit/uv")
 public class WeatherDataController {
     @Inject
-    OpenUVService service;
+    WeatherDataService service;
 
     @Property(name="openuv.header.token.name")
     String accessHeaderName;
@@ -47,8 +47,7 @@ public class WeatherDataController {
         URI uri = UriBuilder.of("https://maps.googleapis.com/maps/api/elevation/json?locations="+ lat + "%2C"
                 + lng +"&key=" + googleElevationApiKey).build();
 
-        HttpRequest request = HttpRequest.newBuilder(uri)
-                .build();
+        HttpRequest request = HttpRequest.newBuilder(uri).build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         return service.parseGoogleElevationResponse(response);
