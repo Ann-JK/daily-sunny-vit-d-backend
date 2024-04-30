@@ -6,5 +6,8 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
   <include file="changelog/01-create-user-tables.sql" relativeToChangelogFile="true"/>
+  <include file="changelog/02-alter-table-user-role.sql" relativeToChangelogFile="true"/>
+  <include file="changelog/03-create-uv-data-table.sql" relativeToChangelogFile="true"/>
+  <include file="changelog/04-alter-table-uv-data.sql" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

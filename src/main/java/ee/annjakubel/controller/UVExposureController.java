@@ -27,7 +27,6 @@ public class UVExposureController {
     public MutableHttpResponse<UVResponse> getSunExposureData(@Body UVRequest uvRequest) throws IOException, InterruptedException {
         UVResponse uvResponse = uvExposureService.calculateSunExposureData(uvRequest);
         log.info(uvResponse.toString());
-
         return HttpResponse.ok(uvResponse);
     }
 }

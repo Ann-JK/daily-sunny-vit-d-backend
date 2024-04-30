@@ -2,9 +2,11 @@ package ee.annjakubel.service;
 
 import ee.annjakubel.Description;
 import ee.annjakubel.controller.WeatherDataController;
+import ee.annjakubel.entity.UVData;
 import ee.annjakubel.model.OpenUV;
 import ee.annjakubel.model.UVRequest;
 import ee.annjakubel.model.UVResponse;
+import ee.annjakubel.repository.UVDataJdbcRepository;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 
 @Singleton
 @Slf4j
@@ -20,24 +23,31 @@ public class UVExposureService {
     @Inject
     WeatherDataController openUVController;
 
+    @Inject
+    UVDataJdbcRepository uvDataJdbcRepository;
+
     public UVResponse calculateSunExposureData(UVRequest uvRequest) throws IOException, InterruptedException {
-       OpenUV uvData = openUVController.getUVData(String.valueOf(uvRequest.getLatitude()),
-               String.valueOf(uvRequest.getLongitude()));
+        String formattedLongitude = String.valueOf(uvRequest.getLongitude());
+        String formattedLatitude = String.valueOf(uvRequest.getLatitude());
 
-       double elevation = openUVController.getElevationData(String.valueOf(uvRequest.getLatitude()),
-               String.valueOf(uvRequest.getLongitude()));
+        OpenUV uvData = openUVController.getUVData(formattedLatitude,
+               formattedLongitude);
 
+       double elevation = openUVController.getElevationData(formattedLatitude, formattedLongitude);
        double formattedUVIndex = roundDecimals(uvData.getUvIndex(), 2);
+       int skinType = uvRequest.getSkinType();
 
-       if (uvData.getUvIndex() < 3.0) {
+       if (formattedUVIndex < 3.0) {
+           saveHistory(uvRequest, uvData.getUvIndex(), 0);
            return new UVResponse(formattedUVIndex, 0, Description.NO_EXPOSURE);
        }
 
-        double recommendedTime = calculateFormula(uvRequest.getSkinType(), uvData, elevation);
+        double recommendedTime = calculateFormula(skinType, uvData, elevation);
         String formattedDescription = String.format(Description.EXPOSURE, (int) formattedUVIndex, (int) recommendedTime);
         log.info(formattedDescription);
 
-       return new UVResponse(formattedUVIndex, recommendedTime, formattedDescription);
+        saveHistory(uvRequest, uvData.getUvIndex(), recommendedTime);
+        return new UVResponse(formattedUVIndex, recommendedTime, formattedDescription);
     }
 
     public double calculateFormula(int skinType, OpenUV uvData, double elevation) {
@@ -52,16 +62,26 @@ public class UVExposureService {
         double oZoneLayerThicknessFactor = 1 / (1 + 0.0001 * uvData.getOzoneLayerThickness());
         double skinTypeFactor = 1.0 / skinType;
 
+        double minutesResult = roundDecimals(1000.0 / (uvData.getUvIndex() * 60 * skinTypeFactor *
+                 solarZenithAngle * altitudeFactor * oZoneLayerThicknessFactor), 0);
 
-        double minutesResult = Math.round(1000.0 / (uvData.getUvIndex() * 60 * skinTypeFactor *
-                 solarZenithAngle * altitudeFactor * oZoneLayerThicknessFactor));
-
-        return roundDecimals(minutesResult, 0);
+        return minutesResult;
     }
 
     public double roundDecimals(double value, int decimal) {
         BigDecimal bigDecimal = new BigDecimal(value);
         bigDecimal = bigDecimal.setScale(decimal, RoundingMode.HALF_UP);
         return bigDecimal.doubleValue();
+    }
+
+    public void saveHistory( UVRequest request, double uvIndex, double minutes) {
+        uvDataJdbcRepository.save(new UVData(null,
+                uvIndex,
+                request.getLongitude(),
+                request.getLatitude(),
+                request.getSkinType(),
+                minutes,
+                LocalDateTime.now()));
+
     }
 }
