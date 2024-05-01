@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 public class UVExposureService {
 
     @Inject
-    WeatherDataController openUVController;
+    WeatherDataController weatherDataController;
 
     @Inject
     UVDataJdbcRepository uvDataJdbcRepository;
@@ -30,10 +30,10 @@ public class UVExposureService {
         String formattedLongitude = String.valueOf(uvRequest.getLongitude());
         String formattedLatitude = String.valueOf(uvRequest.getLatitude());
 
-        OpenUV uvData = openUVController.getUVData(formattedLatitude,
+        OpenUV uvData = weatherDataController.getUVData(formattedLatitude,
                formattedLongitude);
 
-       double elevation = openUVController.getElevationData(formattedLatitude, formattedLongitude);
+       double elevation = weatherDataController.getElevationData(formattedLatitude, formattedLongitude);
        double formattedUVIndex = roundDecimals(uvData.getUvIndex(), 2);
        int skinType = uvRequest.getSkinType();
 
