@@ -1,0 +1,1 @@
+ALTER TABLE uv_data ADD date_time timestamp;
